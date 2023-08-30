@@ -30,6 +30,7 @@ export default function Home() {
     [string, string][]
   >([]);
   const [originalSellUSDT, setOriginalSellUSDT] = useState(0);
+  const [startBot, setStartBot] = useState(false);
 
   const handleTrade = () => {
     let buyPromises = [];
@@ -161,7 +162,9 @@ export default function Home() {
             setOriginalSellRange(sellOriginalResponse.data.data);
             setOriginalSellUSDT(sellOriginalResponse.data.neededUSDT);
 
-            // handleTrade();
+            if (startBot) {
+              // handleTrade();
+            }
           }
         )
         .catch((error) => {
@@ -172,10 +175,10 @@ export default function Home() {
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [startBot]);
   return (
     <main className="flex flex-col items-center justify-between bg-white">
-      <Navbar />
+      <Navbar startBot={startBot} setStartBot={setStartBot} />
       <div className="max-w-[1400px] min-h-screen flex flex-col">
         <div className="flex justify-between w-full mb-8">
           <BalanceCard sald={sald} usdt={usdt} />
