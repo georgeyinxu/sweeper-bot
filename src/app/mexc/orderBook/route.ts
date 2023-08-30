@@ -34,11 +34,16 @@ export async function POST(req: Request, res: NextApiResponse) {
     sellOrder = bookOrderData ? bookOrderData.asks : [];
 
     if (sellOrder.length > 0 && type === "SELL") {
-      for (const order of sellOrder) {
-        const level = parseFloat(order[0]);
-        if (lowerBound <= level && level <= upperBound) {
-          withinRange.push(order);
-          neededUSDT += parseFloat(order[1]) * level;
+      if (maxDepth === 0) {
+        withinRange.push(sellOrder[0]) // Setting the first item if the maxDepth is 0
+        neededUSDT += parseFloat(sellOrder[0][1]) * parseFloat(sellOrder[0][0]);
+      } else {
+        for (const order of sellOrder) {
+          const level = parseFloat(order[0]);
+          if (lowerBound <= level && level <= upperBound) {
+            withinRange.push(order);
+            neededUSDT += parseFloat(order[1]) * level;
+          }
         }
       }
     } else {

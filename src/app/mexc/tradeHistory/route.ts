@@ -6,7 +6,7 @@ const client = new Spot(process.env.MEXC_API_KEY, process.env.MEXC_API_SECRET, {
   baseURL: process.env.MEXC_API_URL,
 });
 
-type TTrade = {
+export type TTrade = {
   id: null;
   price: string;
   qty: string;
@@ -31,5 +31,5 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).send("Error fetching tradeHistory due to: " + error);
   }
 
-  return NextResponse.json({ data: history });
+  return NextResponse.json({ history });
 }

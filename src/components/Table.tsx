@@ -1,30 +1,41 @@
-const Table = () => {
+import React from "react";
+import { TTrade } from "@/app/mexc/tradeHistory/route";
+import { DateTime } from 'luxon';
+
+type Props = {
+  rowName: string[];
+  data?: [string, string][];
+  recentTradesData?: TTrade[];
+};
+
+const Table: React.FC<Props> = ({ rowName, data, recentTradesData }) => {
   return (
-    <div className="overflow-x-auto rounded-xl border-2 border-gray-200">
+    <div className="overflow-x-auto max-h-[50vh] rounded-xl border-2 border-gray-200">
       <table className="table text-black">
-        <thead className='text-gray-400 font-medium'>
+        <thead className="text-gray-400 font-medium">
           <tr className="border-b-gray-200">
-            <th>Level</th>
-            <th>SALD Amount</th>
-            <th>USDT Amount</th>
+            {rowName.map((name, index) => (
+              <th key={index + name}>{name}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          <tr className='border-b-gray-200'>
-            <td>Cy Ganderton</td>
-            <td>Quality Control Specialist</td>
-            <td>Blue</td>
-          </tr>
-          <tr className="border-b-gray-200">
-            <td>Hart Hagerty</td>
-            <td>Desktop Support Technician</td>
-            <td>Purple</td>
-          </tr>
-          <tr className="border-b-gray-200">
-            <td>Brice Swyre</td>
-            <td>Tax Accountant</td>
-            <td>Red</td>
-          </tr>
+          {data &&
+            data.map((item) => (
+              <tr className="border-b-gray-200" key={item[0]}>
+                <td>{item[0]}</td>
+                <td>{item[1]}</td>
+                <td>{parseFloat(item[0]) * parseFloat(item[1])}</td>
+              </tr>
+            ))}
+          {recentTradesData &&
+            recentTradesData.map((trade, index) => (
+              <tr className="border-b-gray-200" key={index}>
+                <td>{trade.price}</td>
+                <td>{trade.qty}</td>
+                <td>{new Date(trade.time).toLocaleTimeString()}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
