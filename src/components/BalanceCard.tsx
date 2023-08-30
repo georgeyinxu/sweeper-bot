@@ -18,7 +18,7 @@ const BalanceCard: React.FC<Props> = ({ usdt, sald }) => {
             height={36}
             alt="sald coin"
           />
-          <p className="text-black font-bold text-2xl">${sald}</p>
+          <p className="text-black font-bold text-2xl">{sald}</p>
         </div>
         <div className="card-title text-black text-2xl">
           <Image
@@ -27,7 +27,7 @@ const BalanceCard: React.FC<Props> = ({ usdt, sald }) => {
             height={36}
             alt="tether coin"
           />
-          <p className="text-black font-bold text-2xl">${usdt}</p>
+          <p className="text-black font-bold text-2xl">{usdt}</p>
         </div>
       </div>
     </div>
