@@ -38,7 +38,7 @@ export async function POST(req: Request, res: NextApiResponse) {
         const level = parseFloat(order[0]);
         if (lowerBound <= level && level <= upperBound) {
           withinRange.push(order);
-          neededUSDT += parseFloat(order[1]) * level
+          neededUSDT += parseFloat(order[1]) * level;
         }
       }
     } else {
