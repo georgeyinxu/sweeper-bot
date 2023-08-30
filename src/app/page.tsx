@@ -1,9 +1,7 @@
-import Navbar from "./components/Navbar";
-import TokenCard from "./components/TokenCard";
-import Table from "./components/Table";
-import BalanceCard from "./components/BalanceCard";
-
-
+import Navbar from "../components/Navbar";
+import TokenCard from "../components/TokenCard";
+import Table from "../components/Table";
+import BalanceCard from "../components/BalanceCard";
 
 export default function Home() {
   return (
