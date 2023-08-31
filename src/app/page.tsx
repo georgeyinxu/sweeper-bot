@@ -31,6 +31,8 @@ export default function Home() {
   >([]);
   const [originalSellUSDT, setOriginalSellUSDT] = useState(0);
   const [startBot, setStartBot] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleTrade = () => {
     console.log("Trade has been initialized");
@@ -86,8 +88,6 @@ export default function Home() {
         return;
       }
 
-      console.log(sellPromises);
-
       const allPromises = buyPromises.concat(sellPromises);
 
       // Check if there are enough USDT to buy then you execute all the trades
@@ -102,12 +102,16 @@ export default function Home() {
                 `Successfully placed an ${orderResponse.type} for ${orderResponse.quantity} SALD at $${orderResponse.price}.`
               );
             });
+
+            setShowSuccess(true);
           })
           .catch((error) => {
             // TODO: Do proper error handling when free
             console.error(
               "An error occured when placing a BUY/SELL order due to: " + error
             );
+
+            setShowError(true);
           });
       }
     }
@@ -249,16 +253,22 @@ export default function Home() {
       {
         // Toast messages
       }
-      {/* <div
-        id="toast-message-cta"
-        className="w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow dark:bg-gray-800 dark:text-gray-400"
-        role="alert"
-      >
-        <div className="toast toast-bottom toast-end">
-          <div className="flex items-center justify-center bg-teal-400 rounded-md relative px-4 py-2">
+
+      <div className="toast toast-bottom toast-end">
+        <div
+          id="toast-message-cta"
+          className="w-full rounded-lg shadow"
+          role="alert"
+        >
+          {" "}
+          <div
+            className={`items-center justify-between bg-teal-400 rounded-md relative px-4 py-2 my-2 ${
+              showSuccess? "flex" : "hidden"
+            }`}
+          >
             <div className="font-normal">
               <div className="text-base font-normal text-white">
-                Buy order for 500 SALD at $0.027 has succeeded
+                All BUY/SELL Orders have succeeded
               </div>
             </div>
             <button
@@ -266,6 +276,7 @@ export default function Home() {
               className="ml-4 bg-white justify-center items-center flex-shrink-0 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
               data-dismiss-target="#toast-message-cta"
               aria-label="Close"
+              onClick={() => setShowSuccess(false)}
             >
               <span className="sr-only">Close</span>
               <svg
@@ -285,10 +296,15 @@ export default function Home() {
               </svg>
             </button>
           </div>
-          <div className="flex items-center justify-center bg-teal-400 rounded-md relative px-4 py-2">
+          <div
+            className={`items-center justify-center bg-red-400 rounded-md relative px-4 py-2 ${
+              showError ? "flex" : "hidden"
+            }`}
+          >
             <div className="font-normal">
               <div className="text-base font-normal text-white">
-                Buy order for 500 SALD at $0.027 has succeeded
+                There were some errors making the transaction. Please check the
+                terminal for more details
               </div>
             </div>
             <button
@@ -296,6 +312,7 @@ export default function Home() {
               className="ml-4 bg-white justify-center items-center flex-shrink-0 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
               data-dismiss-target="#toast-message-cta"
               aria-label="Close"
+              onClick={() => setShowError(false)}
             >
               <span className="sr-only">Close</span>
               <svg
@@ -316,7 +333,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-      </div> */}
+      </div>
     </main>
   );
 }
