@@ -8,14 +8,15 @@ const client = new Spot(process.env.MEXC_API_KEY, process.env.MEXC_API_SECRET, {
 
 export async function POST(req: Request, res: NextApiResponse) {
   let { quantity, price, type } = await req.json();
-  let orderData = {}
+  let orderData = {};
+
+  const quoteOrderQty = quantity * price;
 
   try {
     client
       .Order({
         type: "MARKET",
-        price,
-        quantity,
+        quoteOrderQty,
         symbol: process.env.SYMBOL,
         side: type,
       })
