@@ -39,17 +39,6 @@ export default function Home() {
     let buyPromises = [];
     let sellPromises = [];
 
-    // Make the buy first, succeed then make the sell for 1%
-    for (const range of buyRange) {
-      const buyPromise = axios.post("http://localhost:3000/mexc/trade", {
-        quantity: parseFloat(range[1]),
-        price: parseFloat(range[0]),
-        type: "BUY",
-      });
-
-      buyPromises.push(buyPromise);
-    }
-
     if (
       buyUSDT > 0 &&
       parseFloat(originalSellRange[0][0]) > parseFloat(saldPrice)
@@ -88,9 +77,26 @@ export default function Home() {
         return;
       }
 
+      if (sellPromises.length > 0) {
+        console.log("came into the wrong place")
+        // Make the buy first, succeed then make the sell for 1%
+        for (const range of buyRange) {
+          const buyPromise = axios.post("http://localhost:3000/mexc/trade", {
+            quantity: parseFloat(range[1]),
+            price: parseFloat(range[0]),
+            type: "BUY",
+          });
+
+          buyPromises.push(buyPromise);
+        }
+      } else {
+        return;
+      }
+
       const allPromises = buyPromises.concat(sellPromises);
 
       // Check if there are enough USDT to buy then you execute all the trades
+      console.log(sellPromises.length);
       if (parseFloat(usdt) > buyUSDT && sellPromises.length > 0) {
         Promise.all(allPromises)
           .then((responses) => {
@@ -114,6 +120,9 @@ export default function Home() {
             setShowError(true);
           });
       }
+
+      console.log("never got in sadly");
+      return;
     }
   };
 
@@ -263,7 +272,7 @@ export default function Home() {
           {" "}
           <div
             className={`items-center justify-between bg-teal-400 rounded-md relative px-4 py-2 my-2 ${
-              showSuccess? "flex" : "hidden"
+              showSuccess ? "flex" : "hidden"
             }`}
           >
             <div className="font-normal">

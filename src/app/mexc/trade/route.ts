@@ -9,18 +9,28 @@ const client = new Spot(process.env.MEXC_API_KEY, process.env.MEXC_API_SECRET, {
 export async function POST(req: Request, res: NextApiResponse) {
   let { quantity, price, type } = await req.json();
   let orderData = {};
+  let config = {};
 
   const quoteOrderQty = quantity * price;
 
+  if (type === "BUY") {
+    config = {
+      type: "MARKET",
+      quoteOrderQty,
+      symbol: process.env.SYMBOL,
+      side: type,
+    };
+  } else {
+    config = {
+      type: "MARKET",
+      quantity,
+      symbol: process.env.SYMBOL,
+      side: type,
+    };
+  }
+
   try {
-    client
-      .Order({
-        type: "MARKET",
-        quoteOrderQty,
-        symbol: process.env.SYMBOL,
-        side: type,
-      })
-      .then((response) => (orderData = response.data));
+    client.Order(config).then((response) => (orderData = response.data));
   } catch (error) {
     console.log(error);
     return res.status(400).send("Error due to: " + error);
