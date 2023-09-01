@@ -78,7 +78,6 @@ export default function Home() {
       }
 
       if (sellPromises.length > 0) {
-        console.log("came into the wrong place")
         // Make the buy first, succeed then make the sell for 1%
         for (const range of buyRange) {
           const buyPromise = axios.post("http://localhost:3000/mexc/trade", {
@@ -98,30 +97,37 @@ export default function Home() {
       // Check if there are enough USDT to buy then you execute all the trades
       console.log(sellPromises.length);
       if (parseFloat(usdt) > buyUSDT && sellPromises.length > 0) {
-        Promise.all(allPromises)
-          .then((responses) => {
-            responses.forEach((response) => {
-              const { data } = response;
-              let orderResponse = data.data;
-              // TODO: Do proper message handling when free
-              console.log(
-                `Successfully placed an ${orderResponse.type} for ${orderResponse.quantity} SALD at $${orderResponse.price}.`
-              );
-            });
+        // Make all the sell orders first before making a buy order
 
-            setShowSuccess(true);
+        Promise.all(sellPromises)
+          .then((sellResults) => {
+            console.log("All Sell Orders have been completed");
+
+            if (sellResults.every((result) => result.status === 200)) {
+              return Promise.all(buyPromises);
+            } else {
+              throw new Error("One or more SELL orders failed.");
+            }
+          })
+          .then((buyResults) => {
+            console.log("All BUY promises have been completed");
+
+            if (buyResults.every((result) => result.status === 200)) {
+              console.log("All BUY orders were successful.");
+              setShowSuccess(true);
+            } else {
+              console.log("One or more BUY orders failed.");
+            }
           })
           .catch((error) => {
-            // TODO: Do proper error handling when free
             console.error(
-              "An error occured when placing a BUY/SELL order due to: " + error
+              "An error occured when placing a SELL order due to: " + error
             );
 
             setShowError(true);
           });
       }
 
-      console.log("never got in sadly");
       return;
     }
   };

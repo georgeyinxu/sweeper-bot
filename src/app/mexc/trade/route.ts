@@ -30,7 +30,11 @@ export async function POST(req: Request, res: NextApiResponse) {
   }
 
   try {
-    client.Order(config).then((response) => (orderData = response.data));
+    if (price * quantity > 5) {
+        client.Order(config).then((response) => (orderData = response.data));
+    } else {
+        return res.status(400).send("Order has to be more than 5 USDT");
+    }
   } catch (error) {
     console.log(error);
     return res.status(400).send("Error due to: " + error);
